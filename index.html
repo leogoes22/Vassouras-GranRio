@@ -261,6 +261,43 @@
     .foot-grid{grid-template-columns:1fr;gap:30px}
   }
   @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+
+  /* ---------- TRABALHE CONOSCO (modal) ---------- */
+  @media(max-width:1100px) and (min-width:921px){.menu{gap:20px}.menu a{font-size:14.5px}}
+  body.tc-lock{overflow:hidden}
+  .tc-overlay{position:fixed;inset:0;z-index:100;background:rgba(21,32,46,.58);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+    display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}
+  .tc-overlay.open{opacity:1;visibility:visible}
+  .tc-box{position:relative;background:#fff;border-radius:22px;width:100%;max-width:470px;max-height:calc(100vh - 40px);overflow:auto;
+    box-shadow:0 30px 80px rgba(15,60,122,.35);transform:translateY(18px) scale(.98);transition:transform .28s ease}
+  .tc-overlay.open .tc-box{transform:none}
+  .tc-box .tricolor{border-radius:22px 22px 0 0;overflow:hidden}
+  .tc-close{position:absolute;top:18px;right:16px;width:38px;height:38px;border-radius:50%;border:none;background:var(--nevoa);
+    color:var(--grafite);font-size:22px;line-height:1;cursor:pointer;display:grid;place-items:center;transition:background .2s}
+  .tc-close:hover{background:#e3e8f0}
+  .tc-close:focus-visible,.tc-overlay .btn:focus-visible{outline:3px solid rgba(24,88,176,.45);outline-offset:2px}
+  .tc-head{padding:30px 30px 0}
+  .tc-head h3{font-size:1.65rem;color:var(--grafite);padding-right:40px}
+  .tc-head p{color:var(--cinza-tx);font-size:.97rem;margin-top:8px}
+  form.tc-form{border:none;border-radius:0;padding:22px 30px 28px;background:transparent}
+  .tc-form .fld{margin-bottom:16px}
+  .tc-form .fld.invalid input{border-color:var(--vermelho);box-shadow:0 0 0 4px rgba(203,51,38,.10)}
+  .tc-err{display:block;min-height:0;color:var(--vermelho-esc);font-size:12.5px;font-weight:500;margin-top:6px}
+  .tc-err:empty{display:none}
+  .tc-form .btn-azul{width:100%;justify-content:center;font-size:16px;padding:15px}
+  .tc-form .btn-azul[disabled]{opacity:.7;cursor:progress;transform:none}
+  .tc-privacy{font-size:12.5px;color:var(--cinza-tx);margin-top:14px;text-align:center}
+  .tc-fallback{display:none;margin-top:14px;padding:14px 16px;border-radius:12px;background:#fdf1ef;color:var(--vermelho-esc);font-size:14px}
+  .tc-fallback.show{display:block}
+  .tc-fallback a{display:inline-block;margin-top:6px;font-weight:700;text-decoration:underline}
+  .tc-success{display:none;padding:46px 30px 34px;text-align:center}
+  .tc-success .ok{width:74px;height:74px;border-radius:50%;background:#e7f6ec;color:#1f9d55;display:grid;place-items:center;margin:0 auto 20px}
+  .tc-success .ok svg{width:38px;height:38px}
+  .tc-success h3{font-size:1.55rem;color:var(--grafite)}
+  .tc-success p{color:var(--cinza-tx);margin:10px auto 26px;max-width:340px}
+  .tc-box.done .tc-head,.tc-box.done .tc-form{display:none}
+  .tc-box.done .tc-success{display:block}
+  @media(max-width:560px){.tc-head{padding:26px 22px 0}form.tc-form{padding:20px 22px 24px}.tc-overlay{padding:12px}}
 </style>
 </head>
 <body>
@@ -280,6 +317,7 @@
       <a href="#historia">História</a>
       <a href="#sobre">A Empresa</a>
       <a href="#contato">Contato</a>
+      <a href="#trabalhe-conosco" class="js-trabalhe">Trabalhe conosco</a>
       <a href="https://wa.me/5521982013773" class="btn btn-wpp" target="_blank" rel="noopener">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 018.413 3.488 11.824 11.824 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 001.523 5.266l-.999 3.648 3.965-1.213z"/></svg>
         Pedir orçamento
@@ -529,6 +567,7 @@
           <li><a href="#historia">História</a></li>
           <li><a href="#sobre">A Empresa</a></li>
           <li><a href="#contato">Contato</a></li>
+          <li><a href="#trabalhe-conosco" class="js-trabalhe">Trabalhe conosco</a></li>
         </ul>
       </div>
       <div>
@@ -548,6 +587,50 @@
     </div>
   </div>
 </footer>
+
+<!-- TRABALHE CONOSCO (modal) -->
+<div class="tc-overlay" id="tc-overlay" aria-hidden="true">
+  <div class="tc-box" role="dialog" aria-modal="true" aria-labelledby="tc-title">
+    <div class="tricolor"><i></i><i></i><i></i></div>
+    <button type="button" class="tc-close" data-tc-close aria-label="Fechar">&times;</button>
+
+    <div class="tc-head">
+      <h3 id="tc-title">Trabalhe conosco</h3>
+      <p>Quer fazer parte da equipe GranRio? Deixe seus dados e nossa equipe entra em contato.</p>
+    </div>
+
+    <form class="tc-form" id="tc-form" novalidate>
+      <div class="fld">
+        <label for="tc-nome">Nome completo</label>
+        <input id="tc-nome" name="nome" type="text" autocomplete="name" placeholder="Seu nome e sobrenome" required />
+        <span class="tc-err" aria-live="polite"></span>
+      </div>
+      <div class="fld">
+        <label for="tc-tel">Telefone / WhatsApp</label>
+        <input id="tc-tel" name="telefone" type="tel" inputmode="numeric" autocomplete="tel-national" placeholder="(21) 90000-0000" required />
+        <span class="tc-err" aria-live="polite"></span>
+      </div>
+      <div class="fld">
+        <label for="tc-end">Endereço</label>
+        <input id="tc-end" name="endereco" type="text" autocomplete="street-address" placeholder="Rua, número, bairro e cidade" required />
+        <span class="tc-err" aria-live="polite"></span>
+      </div>
+      <button type="submit" class="btn btn-azul" id="tc-btn">Enviar meus dados</button>
+      <div class="tc-fallback" id="tc-fallback" role="alert">
+        Não conseguimos enviar agora.<br>
+        <a href="#" id="tc-fallback-link" target="_blank" rel="noopener">Enviar meus dados pelo WhatsApp</a>
+      </div>
+      <p class="tc-privacy">Seus dados serão usados apenas para o processo de seleção da GranRio.</p>
+    </form>
+
+    <div class="tc-success" id="tc-success" aria-live="polite">
+      <div class="ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+      <h3>Dados enviados com sucesso!</h3>
+      <p id="tc-success-msg">Nossa equipe vai analisar seu cadastro e entrar em contato pelo telefone informado.</p>
+      <button type="button" class="btn btn-azul" data-tc-close>Fechar</button>
+    </div>
+  </div>
+</div>
 
 <!-- WhatsApp flutuante -->
 <a class="wpp-float" href="https://wa.me/5521982013773?text=Ol%C3%A1!%20Vim%20pelo%20site%20da%20GranRio." target="_blank" rel="noopener" aria-label="WhatsApp">
@@ -582,6 +665,168 @@
     window.open(`https://wa.me/${num}?text=${encodeURIComponent(t)}`,'_blank');
     return false;
   }
+
+  // ===================== TRABALHE CONOSCO =====================
+  // WHATSAPP: número que recebe os cadastros.
+  // WEBHOOK_URL: deixe vazio para enviar via WhatsApp (abre a conversa já preenchida).
+  //              Preencha com a URL do webhook (N8N) para envio 100% automático.
+  const TC_CONFIG = {
+    WHATSAPP: '5521982013773',
+    WEBHOOK_URL: ''
+  };
+
+  (function(){
+    const ov   = document.getElementById('tc-overlay');
+    const box  = ov.querySelector('.tc-box');
+    const form = document.getElementById('tc-form');
+    const fNome= document.getElementById('tc-nome');
+    const fTel = document.getElementById('tc-tel');
+    const fEnd = document.getElementById('tc-end');
+    const btn  = document.getElementById('tc-btn');
+    const fb   = document.getElementById('tc-fallback');
+    const fbLk = document.getElementById('tc-fallback-link');
+    let ultimoFoco = null;
+
+    function abrir(e){
+      if(e) e.preventDefault();
+      ultimoFoco = document.activeElement;
+      resetar();
+      ov.classList.add('open');
+      ov.setAttribute('aria-hidden','false');
+      document.body.classList.add('tc-lock');
+      setTimeout(()=>fNome.focus(), 80);
+    }
+    function fechar(){
+      ov.classList.remove('open');
+      ov.setAttribute('aria-hidden','true');
+      document.body.classList.remove('tc-lock');
+      if(location.hash === '#trabalhe-conosco') history.replaceState(null,'',location.pathname+location.search);
+      if(ultimoFoco && ultimoFoco.focus) ultimoFoco.focus();
+    }
+    function resetar(){
+      box.classList.remove('done');
+      fb.classList.remove('show');
+      carregando(false);
+      [fNome,fTel,fEnd].forEach(f=>erro(f,''));
+    }
+    function carregando(on){
+      btn.disabled = on;
+      btn.textContent = on ? 'Enviando...' : 'Enviar meus dados';
+    }
+    function erro(campo,msg){
+      const w = campo.closest('.fld');
+      w.classList.toggle('invalid', !!msg);
+      w.querySelector('.tc-err').textContent = msg || '';
+      campo.setAttribute('aria-invalid', msg ? 'true' : 'false');
+    }
+    function sucesso(nome){
+      const primeiro = nome.split(/\s+/)[0];
+      document.getElementById('tc-success-msg').textContent =
+        `Obrigado, ${primeiro}! Nossa equipe vai analisar seu cadastro e entrar em contato pelo telefone informado.`;
+      box.classList.add('done');
+      form.reset();
+      box.scrollTop = 0;
+      setTimeout(()=>box.querySelector('.tc-success [data-tc-close]').focus(), 60);
+    }
+
+    // abrir pelos links do topo e rodapé (e por #trabalhe-conosco na URL)
+    document.querySelectorAll('.js-trabalhe').forEach(a=>a.addEventListener('click', abrir));
+    if(location.hash === '#trabalhe-conosco') abrir();
+    window.addEventListener('hashchange', ()=>{ if(location.hash === '#trabalhe-conosco') abrir(); });
+
+    // fechar: botão, clique fora, Esc
+    ov.querySelectorAll('[data-tc-close]').forEach(b=>b.addEventListener('click', fechar));
+    ov.addEventListener('click', e=>{ if(e.target === ov) fechar(); });
+    document.addEventListener('keydown', e=>{
+      if(!ov.classList.contains('open')) return;
+      if(e.key === 'Escape'){ fechar(); return; }
+      if(e.key === 'Tab'){
+        const foc = [...box.querySelectorAll('button,input,a[href]')].filter(el=>el.offsetParent !== null && !el.disabled);
+        if(!foc.length) return;
+        const pri = foc[0], ult = foc[foc.length-1];
+        if(e.shiftKey && document.activeElement === pri){ e.preventDefault(); ult.focus(); }
+        else if(!e.shiftKey && document.activeElement === ult){ e.preventDefault(); pri.focus(); }
+      }
+    });
+
+    // máscara de telefone
+    fTel.addEventListener('input', ()=>{
+      const d = fTel.value.replace(/\D/g,'').slice(0,11);
+      let v = '';
+      if(d.length > 10)      v = `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7)}`;
+      else if(d.length > 6)  v = `(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6)}`;
+      else if(d.length > 2)  v = `(${d.slice(0,2)}) ${d.slice(2)}`;
+      else if(d.length)      v = `(${d}`;
+      fTel.value = v;
+    });
+    [fNome,fTel,fEnd].forEach(f=>f.addEventListener('input', ()=>erro(f,'')));
+
+    function validar(){
+      let ok = true;
+      const nome = fNome.value.trim().replace(/\s+/g,' ');
+      const tel  = fTel.value.replace(/\D/g,'');
+      const end  = fEnd.value.trim();
+      if(nome.split(' ').filter(p=>p.length >= 2).length < 2){ erro(fNome,'Informe nome e sobrenome.'); ok = false; }
+      if(tel.length < 10){ erro(fTel,'Informe o telefone com DDD.'); ok = false; }
+      if(end.length < 8){ erro(fEnd,'Informe rua, número, bairro e cidade.'); ok = false; }
+      if(!ok){ const inv = form.querySelector('.fld.invalid input'); if(inv) inv.focus(); }
+      return ok;
+    }
+
+    form.addEventListener('submit', async e=>{
+      e.preventDefault();
+      fb.classList.remove('show');
+      if(!validar()) return;
+
+      const nome = fNome.value.trim().replace(/\s+/g,' ');
+      const tel  = fTel.value.trim();
+      const end  = fEnd.value.trim().replace(/\s+/g,' ');
+      const quando = new Date().toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'});
+      const texto =
+        `*TRABALHE CONOSCO — Site GranRio*\n\n` +
+        `*Nome:* ${nome}\n` +
+        `*Telefone:* ${tel}\n` +
+        `*Endereço:* ${end}\n\n` +
+        `_Cadastro enviado pelo site em ${quando}_`;
+      const linkWpp = `https://wa.me/${TC_CONFIG.WHATSAPP}?text=${encodeURIComponent(texto)}`;
+
+      // sem webhook: abre o WhatsApp já com todos os dados
+      if(!TC_CONFIG.WEBHOOK_URL){
+        window.open(linkWpp, '_blank');
+        sucesso(nome);
+        return;
+      }
+
+      // com webhook (N8N): envio automático
+      carregando(true);
+      try{
+        const r = await fetch(TC_CONFIG.WEBHOOK_URL, {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({
+            origem:'site-granrio',
+            tipo:'trabalhe_conosco',
+            nome,
+            telefone: tel,
+            telefone_numeros: tel.replace(/\D/g,''),
+            endereco: end,
+            mensagem: texto,
+            whatsapp_destino: TC_CONFIG.WHATSAPP,
+            enviado_em: new Date().toISOString(),
+            pagina: location.href
+          })
+        });
+        if(!r.ok) throw new Error('HTTP ' + r.status);
+        sucesso(nome);
+      }catch(err){
+        console.error('Trabalhe conosco:', err);
+        carregando(false);
+        fbLk.href = linkWpp;
+        fbLk.onclick = ()=>setTimeout(()=>sucesso(nome), 300);
+        fb.classList.add('show');
+      }
+    });
+  })();
 </script>
 </body>
 </html>
