@@ -233,8 +233,7 @@ function montarDoc(p, E, LOGO) {
     ['Forma de pagamento', textoPagamento(p)],
     ['Frete', textoFrete(p)],
     ['Prazo de entrega', p.entrega || 'A combinar'],
-    ['Validade da proposta', (p.validadeDias || 7) + ' dias (até ' + dataBR(validadeData(p)) + ')'],
-    ['Pedido mínimo', (E.minimo || 12) + ' unidades por item']
+    ['Validade da proposta', (p.validadeDias || 7) + ' dias (até ' + dataBR(validadeData(p)) + ')']
   ].map(function (r) { return [{ text: r[0], style: 'rot' }, { text: r[1], style: 'val' }]; });
   var blocoCond = { width: '*', stack: [
     { text: 'Condições comerciais', style: 'h2' },
@@ -421,7 +420,7 @@ function telaCliente() {
 }
 
 function linhaSel(it, idx) {
-  var c = it.id ? porId(it.id) : null, min = (c && c.min) || S.empresa.minimo || 12;
+  var c = it.id ? porId(it.id) : null;
   var alt = c && Math.abs(Number(it.preco) - precoTab(c, S.p.tabela)) > 0.004;
   return '<div class="sel-it" data-idx="' + idx + '">' +
     '<div class="nm">' + (it.id ? esc(it.nome) : '<input class="i" data-it="nome" data-idx="' + idx + '" value="' + esc(it.nome) + '" placeholder="Nome do produto" />') + '</div>' +
@@ -429,7 +428,7 @@ function linhaSel(it, idx) {
     '<div class="ctl"><div class="stp"><button data-q="-" data-idx="' + idx + '" aria-label="Menos">−</button><input data-it="qtd" data-idx="' + idx + '" inputmode="numeric" value="' + esc(it.qtd) + '" aria-label="Quantidade" /><button data-q="+" data-idx="' + idx + '" aria-label="Mais">+</button></div>' +
     '<div class="pr' + (alt ? ' alt' : '') + '"><span>R$</span><input data-it="preco" data-idx="' + idx + '" inputmode="decimal" value="' + fmt2(it.preco) + '" aria-label="Valor unitário" /></div>' +
     '<div class="stt" data-sub="' + idx + '"></div></div>' +
-    '<div class="warn" data-warn="' + idx + '">' + (Number(it.qtd) < min ? 'Abaixo do mínimo de ' + min + ' unidades.' : '') + (alt ? (Number(it.qtd) < min ? ' ' : '') + 'Preço fora da tabela (' + 'R$ ' + fmt2(precoTab(c, S.p.tabela)) + ').' : '') + '</div>' +
+    '<div class="warn" data-warn="' + idx + '">' + (alt ? 'Preço fora da tabela (R$ ' + fmt2(precoTab(c, S.p.tabela)) + ').' : '') + '</div>' +
     '</div>';
 }
 
@@ -437,7 +436,7 @@ function telaProdutos() {
   var p = S.p;
   var sel = p.itens.length ? p.itens.map(linhaSel).join('') : '<div class="empty">Nenhum produto ainda. Adicione pela lista abaixo.</div>';
   var gch = '<button class="chip' + (!S.grupo ? ' on' : '') + '" data-g="">Todos</button>' + S.grupos.map(function (g) { return '<button class="chip' + (S.grupo === g ? ' on' : '') + '" data-g="' + esc(g) + '">' + esc(g) + '</button>'; }).join('');
-  return '<h2 class="t">Produtos</h2><p class="sub">Escolha a tabela, adicione os produtos e ajuste quantidades. Mínimo de ' + (S.empresa.minimo || 12) + ' unidades por item.</p>' +
+  return '<h2 class="t">Produtos</h2><p class="sub">Escolha a tabela, adicione os produtos e ajuste as quantidades por unidade.</p>' +
     '<div class="fld"><span class="lbl">Tabela de preços</span><div class="seg" role="group"><button data-tab="comNF" class="' + (p.tabela === 'comNF' ? 'on' : '') + '">Com N.F.</button><button data-tab="semNF" class="' + (p.tabela === 'semNF' ? 'on' : '') + '">Sem N.F.</button></div></div>' +
     '<div class="card"><h3>Na proposta <small>' + p.itens.length + (p.itens.length === 1 ? ' item' : ' itens') + '</small></h3>' + sel +
     '<button class="btn-sm" id="avulso">+ Item fora da tabela</button></div>' +
@@ -452,7 +451,7 @@ function listaCatalogo() {
   vis.forEach(function (c) {
     if (c.grupo !== ultimo) { html += '<div class="grp">' + esc(c.grupo) + '</div>'; ultimo = c.grupo; }
     var it = itemDe(c.id);
-    html += '<div class="prod"><div class="inf"><b>' + esc(c.nome) + '</b><span>R$ ' + fmt2(precoTab(c, S.p.tabela)) + ' / un. · mín. ' + (c.min || 12) + '</span></div>' +
+    html += '<div class="prod"><div class="inf"><b>' + esc(c.nome) + '</b><span>R$ ' + fmt2(precoTab(c, S.p.tabela)) + ' / un.</span></div>' +
       '<button class="add' + (it ? ' in' : '') + '" data-add="' + c.id + '">' + (it ? '✓ ' + it.qtd + ' un.' : '+ Adicionar') + '</button></div>';
   });
   return html;
@@ -533,8 +532,8 @@ function atualizarTotais() {
 function adicionar(id) {
   var c = porId(id); if (!c) return;
   var it = itemDe(id);
-  if (it) it.qtd = Number(it.qtd) + (c.min || 12);
-  else S.p.itens.push({ id: c.id, nome: c.nome, qtd: c.min || 12, preco: precoTab(c, S.p.tabela) });
+  if (it) it.qtd = Number(it.qtd) + 1;
+  else S.p.itens.push({ id: c.id, nome: c.nome, qtd: 1, preco: precoTab(c, S.p.tabela) });
   salvarRascunho();
 }
 function trocarTabela(tab) {
@@ -565,8 +564,8 @@ function ligar() {
   ligarLista();
   app.querySelectorAll('[data-rm]').forEach(function (b) { b.onclick = function () { S.p.itens.splice(+b.dataset.rm, 1); salvarRascunho(); render(); }; });
   app.querySelectorAll('[data-q]').forEach(function (b) { b.onclick = function () {
-    var it = S.p.itens[+b.dataset.idx], c = it.id && porId(it.id), passo = (c && c.min) || 12;
-    var q = Number(it.qtd) || 0; q = b.dataset.q === '+' ? q + passo : Math.max(passo, q - passo); it.qtd = q; salvarRascunho(); render();
+    var it = S.p.itens[+b.dataset.idx];
+    var q = Number(it.qtd) || 0; q = b.dataset.q === '+' ? q + 1 : Math.max(1, q - 1); it.qtd = q; salvarRascunho(); render();
   }; });
   app.querySelectorAll('[data-it]').forEach(function (el) {
     el.addEventListener('input', function () {
@@ -576,7 +575,7 @@ function ligar() {
     });
     if (el.dataset.it === 'preco') el.addEventListener('blur', function () { el.value = fmt2(S.p.itens[+el.dataset.idx].preco); });
   });
-  var av = document.getElementById('avulso'); if (av) av.onclick = function () { S.p.itens.push({ id: null, nome: '', qtd: 12, preco: 0 }); salvarRascunho(); render();
+  var av = document.getElementById('avulso'); if (av) av.onclick = function () { S.p.itens.push({ id: null, nome: '', qtd: 1, preco: 0 }); salvarRascunho(); render();
     var ins = app.querySelectorAll('[data-it="nome"]'); if (ins.length) ins[ins.length - 1].focus(); };
   // condições
   app.querySelectorAll('[data-pg]').forEach(function (b) { b.onclick = function () {
@@ -593,14 +592,13 @@ function ligar() {
 function ligarLista() {
   app.querySelectorAll('[data-add]').forEach(function (b) { b.onclick = function () {
     var ja = itemDe(b.dataset.add); adicionar(b.dataset.add);
-    toast(ja ? '+' + (porId(b.dataset.add).min || 12) + ' un. de ' + ja.nome : 'Adicionado: ' + porId(b.dataset.add).nome);
+    toast(ja ? '+1 un. de ' + ja.nome : 'Adicionado: ' + porId(b.dataset.add).nome);
     var y = window.scrollY; render(); window.scrollTo(0, y);
   }; });
 }
 function atualizarAvisoItem(i) {
-  var it = S.p.itens[i], c = it.id && porId(it.id), min = (c && c.min) || 12, w = document.querySelector('[data-warn="' + i + '"]'); if (!w) return;
+  var it = S.p.itens[i], c = it.id && porId(it.id), w = document.querySelector('[data-warn="' + i + '"]'); if (!w) return;
   var alt = c && Math.abs(Number(it.preco) - precoTab(c, S.p.tabela)) > 0.004, msg = [];
-  if (Number(it.qtd) < min) msg.push('Abaixo do mínimo de ' + min + ' unidades.');
   if (alt) msg.push('Preço fora da tabela (R$ ' + fmt2(precoTab(c, S.p.tabela)) + ').');
   w.textContent = msg.join(' ');
   var pr = document.querySelector('[data-it="preco"][data-idx="' + i + '"]'); if (pr) pr.parentNode.classList.toggle('alt', !!alt);
