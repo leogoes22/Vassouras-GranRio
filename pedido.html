@@ -134,6 +134,13 @@
   .add{flex:1;height:38px;border-radius:10px;border:none;background:var(--azul);color:#fff;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;justify-content:center;gap:7px;transition:.15s}
   .add:hover{background:var(--azul-esc)}
   .empty-search{text-align:center;padding:50px 0;color:var(--cinza-tx)}
+  .item .preco{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.2rem;color:var(--azul);line-height:1.1;margin-top:6px}
+  .item .preco small{font-family:'Inter',sans-serif;font-size:12px;font-weight:500;color:var(--cinza-tx)}
+  .item .preco .ap{display:block;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:var(--cinza-tx);text-transform:uppercase;letter-spacing:.03em}
+  .lineitem .li-val{display:block;font-size:12.5px;font-weight:500;color:var(--cinza-tx);margin-top:2px;font-variant-numeric:tabular-nums}
+  .lineitem .li-val b{color:var(--grafite)}
+  .dfoot .tot small{display:block;font-size:12px;font-weight:500;color:var(--cinza-tx);text-align:right}
+  .precos-nota{font-size:12.5px;color:var(--cinza-tx);margin-top:10px}
 
   /* ---------- BARRA DO CARRINHO (sticky) ---------- */
   .cartbar{position:fixed;left:0;right:0;bottom:0;z-index:60;transform:translateY(120%);transition:transform .28s cubic-bezier(.2,.7,.3,1);padding:0 0 max(14px,env(safe-area-inset-bottom))}
@@ -246,6 +253,7 @@
       <span class="ai">📦</span>
       <div class="at"><b>Pedido no atacado:</b> mínimo de <b>12 unidades por produto</b>, aumentando de <b>6 em 6</b> &nbsp;(12 → 18 → 24 → 30…).</div>
     </div>
+    <p class="precos-nota">Preços por unidade, <b>com nota fiscal</b>. Valores de referência da tabela 2026 — confirmamos tudo no orçamento pelo WhatsApp.</p>
   </div>
 </section>
 
@@ -274,7 +282,7 @@
     <div class="resume">
       <div class="cicon">🛒</div>
       <div class="rt">
-        <b id="cb-itens">0 itens</b>
+        <b id="cb-itens">R$ 0,00</b>
         <span id="cb-unid">0 unidades selecionadas</span>
       </div>
     </div>
@@ -362,7 +370,7 @@
   <div class="dfoot">
     <div class="tot">
       <span>Total do pedido</span>
-      <b id="d-tot">0 itens · 0 unidades</b>
+      <b id="d-tot">R$ 0,00</b>
     </div>
     <button class="btn btn-wpp" id="d-send">💬 Enviar pedido pelo WhatsApp</button>
     <div class="note">Você será levado ao WhatsApp com a mensagem já pronta.</div>
@@ -416,87 +424,87 @@
 
   const PRODUTOS = [
     // Piaçava (lata)
-    {c:'piacava', n:'Vassoura Mini Max', b:'Lata 1'},
-    {c:'piacava', n:'Vassoura Dirigível', b:'Lata 3'},
-    {c:'piacava', n:'Vassoura Aurora', b:'Lata 3'},
-    {c:'piacava', n:'Vassoura Brasileirinha', b:'Lata 5'},
-    {c:'piacava', n:'Vassoura Doméstica', b:'Lata 0'},
-    {c:'piacava', n:'Vassoura Doméstica', b:'Lata 1'},
-    {c:'piacava', n:'Vassoura Doméstica', b:'Lata 2'},
-    {c:'piacava', n:'Vassoura Doméstica', b:'Lata 3'},
-    {c:'piacava', n:'Vassoura Mil', b:'Lata 1'},
-    {c:'piacava', n:'Vassoura Corcovado', b:'Lata 2'},
-    {c:'piacava', n:'Vassoura GranRio', b:'Lata 3'},
+    {c:'piacava', n:'Vassoura Mini Max', b:'Lata 1', v:16.05},
+    {c:'piacava', n:'Vassoura Dirigível', b:'Lata 3', v:22.95},
+    {c:'piacava', n:'Vassoura Aurora', b:'Lata 3', v:20.65},
+    {c:'piacava', n:'Vassoura Brasileirinha', b:'Lata 5', v:25.06},
+    {c:'piacava', n:'Vassoura Doméstica', b:'Lata 0', v:13.25},
+    {c:'piacava', n:'Vassoura Doméstica', b:'Lata 1', v:15.27},
+    {c:'piacava', n:'Vassoura Doméstica', b:'Lata 2', v:16.80},
+    {c:'piacava', n:'Vassoura Doméstica', b:'Lata 3', v:17.56},
+    {c:'piacava', n:'Vassoura Mil', b:'Lata 1', v:16.05},
+    {c:'piacava', n:'Vassoura Corcovado', b:'Lata 2', v:18.15},
+    {c:'piacava', n:'Vassoura GranRio', b:'Lata 3', v:22.95},
     // Gari / Cepo
-    {c:'gari', n:'Vassoura Cepo 4 carreiras', b:'30 furos'},
-    {c:'gari', n:'Vassoura Cepo 5 carreiras', b:'42 furos'},
-    {c:'gari', n:'Vassoura Gari Caixão', b:'42 furos'},
-    {c:'gari', n:'Vassoura Gari Faca', b:'36 furos'},
+    {c:'gari', n:'Vassoura Cepo 4 carreiras', b:'30 furos', v:26.82},
+    {c:'gari', n:'Vassoura Cepo 5 carreiras', b:'40 furos', v:39.44},
+    {c:'gari', n:'Vassoura Gari Caixão', b:'42 furos', v:42.15},
+    {c:'gari', n:'Vassoura Gari Faca', b:'36 furos', v:35.93},
     // Nylon / Plástica
-    {c:'plastica', n:'Vassoura Cerlon', b:'30 cm'},
-    {c:'plastica', n:'Vassoura Cerlon', b:'60 cm'},
-    {c:'plastica', n:'Vassoura Varre Canto', b:'30 cm'},
-    {c:'plastica', n:'Vassoura Faceira', b:'30 cm'},
+    {c:'plastica', n:'Vassoura Cerlon', b:'30 cm', v:16.70},
+    {c:'plastica', n:'Vassoura Cerlon', b:'60 cm', v:35.99},
+    {c:'plastica', n:'Vassoura Varre Canto', b:'30 cm', v:20.82},
+    {c:'plastica', n:'Vassoura Faceira', b:'30 cm', v:16.70},
     // Pelo
-    {c:'pelo', n:'Vassoura de Pelo', b:'30 cm'},
-    {c:'pelo', n:'Vassoura de Pelo', b:'40 cm'},
-    {c:'pelo', n:'Vassoura de Pelo', b:'60 cm'},
-    {c:'pelo', n:'Vassoura Pelo Leque', b:''},
-    {c:'pelo', n:'Vassoura Pelo Cabeça', b:''},
-    {c:'pelo', n:'Vassoura Pelo Bola', b:''},
+    {c:'pelo', n:'Vassoura de Pelo', b:'30 cm', v:49.00},
+    {c:'pelo', n:'Vassoura de Pelo', b:'40 cm', v:68.19},
+    {c:'pelo', n:'Vassoura de Pelo', b:'60 cm', v:106.05},
+    {c:'pelo', n:'Vassoura Pelo Leque', b:'', v:98.15},
+    {c:'pelo', n:'Vassoura Pelo Cabeça', b:'', v:98.15},
+    {c:'pelo', n:'Vassoura Pelo Bola', b:'', v:128.25},
     // Pia / Tina
-    {c:'pia', n:'Vassoura Mini de Pia', b:'Piaçava'},
-    {c:'pia', n:'Vassoura Tina', b:'Piaçava'},
-    {c:'pia', n:'Vassoura Tina', b:'Nylon'},
+    {c:'pia', n:'Vassoura Mini de Pia', b:'Piaçava', v:5.50},
+    {c:'pia', n:'Vassoura Tina', b:'Piaçava', v:5.50},
+    {c:'pia', n:'Vassoura Tina', b:'Nylon', v:5.89},
     // Rodos
-    {c:'rodo', n:'Rodo Madeira', b:'30 cm'},
-    {c:'rodo', n:'Rodo Madeira', b:'40 cm'},
-    {c:'rodo', n:'Rodo Madeira', b:'60 cm'},
-    {c:'rodo', n:'Rodo Plástico', b:'30 cm'},
-    {c:'rodo', n:'Rodo Plástico', b:'40 cm'},
-    {c:'rodo', n:'Rodo Plástico', b:'60 cm'},
-    {c:'rodo', n:'Rodo Metal', b:'30 cm'},
-    {c:'rodo', n:'Rodo Metal', b:'40 cm'},
-    {c:'rodo', n:'Rodo Metal', b:'50 cm'},
-    {c:'rodo', n:'Espalha Cera', b:'30 cm'},
+    {c:'rodo', n:'Rodo Madeira', b:'30 cm', v:10.49},
+    {c:'rodo', n:'Rodo Madeira', b:'40 cm', v:11.43},
+    {c:'rodo', n:'Rodo Madeira', b:'60 cm', v:17.18},
+    {c:'rodo', n:'Rodo Plástico', b:'30 cm', v:11.37},
+    {c:'rodo', n:'Rodo Plástico', b:'40 cm', v:14.24},
+    {c:'rodo', n:'Rodo Plástico', b:'60 cm', v:16.61},
+    {c:'rodo', n:'Rodo Metal', b:'30 cm', v:14.22},
+    {c:'rodo', n:'Rodo Metal', b:'40 cm', v:16.22},
+    {c:'rodo', n:'Rodo Metal', b:'50 cm', v:18.38},
+    {c:'rodo', n:'Espalha Cera', b:'30 cm', v:14.43},
     // Pás
-    {c:'pa', n:'Pá de Lixo Galvanizada', b:'Cabo curto/longo'},
-    {c:'pa', n:'Pá de Lixo', b:'Cabo longo'},
-    {c:'pa', n:'Pá de Lixo', b:'Cabo curto'},
+    {c:'pa', n:'Pá de Lixo Galvanizada', b:'Cabo curto/longo', v:7.95, ap:1},
+    {c:'pa', n:'Pá de Lixo', b:'Cabo longo', v:8.72},
+    {c:'pa', n:'Pá de Lixo', b:'Cabo curto', v:3.55},
     // Vasculhos / Espanadores
-    {c:'espanador', n:'Vasculho de Sisal', b:''},
-    {c:'espanador', n:'Espanador Sisal', b:''},
-    {c:'espanador', n:'Espanador', b:'30/35 cm'},
+    {c:'espanador', n:'Vasculho de Sisal', b:'', v:30.28},
+    {c:'espanador', n:'Espanador Sisal', b:'', v:10.58},
+    {c:'espanador', n:'Espanador', b:'30/35 cm', v:41.66},
     // Escovas
-    {c:'escova', n:'Escova Sanitária', b:'sem suporte'},
-    {c:'escova', n:'Escova Sanitária', b:'com suporte'},
-    {c:'escova', n:'Escova de Banho', b:''},
-    {c:'escova', n:'Escova de Unha', b:'Madeira'},
-    {c:'escova', n:'Escova de Sapato', b:'Madeira'},
-    {c:'escova', n:'Escova Lavatex', b:'Plástica'},
-    {c:'escova', n:'Escova Oval', b:'Madeira'},
+    {c:'escova', n:'Escova Sanitária', b:'sem suporte', v:7.56},
+    {c:'escova', n:'Escova Sanitária', b:'com suporte', v:13.14},
+    {c:'escova', n:'Escova de Banho', b:'', v:14.17},
+    {c:'escova', n:'Escova de Unha', b:'Madeira', v:3.64},
+    {c:'escova', n:'Escova de Sapato', b:'Madeira', v:6.80},
+    {c:'escova', n:'Escova Lavatex', b:'Plástica', v:5.99},
+    {c:'escova', n:'Escova Oval', b:'Madeira', v:4.41},
     // Madeira
-    {c:'madeira', n:'Colher de Madeira', b:'103/104/105'},
-    {c:'madeira', n:'Bate Bife', b:''},
-    {c:'madeira', n:'Socador de Feijão', b:''},
-    {c:'madeira', n:'Tábua de Carne', b:'nº 4'},
+    {c:'madeira', n:'Colher de Madeira', b:'103/104/105', v:7.97},
+    {c:'madeira', n:'Bate Bife', b:'', v:9.55},
+    {c:'madeira', n:'Socador de Feijão', b:'', v:9.25},
+    {c:'madeira', n:'Tábua de Carne', b:'nº 4', v:23.20},
     // Prendedores / Cordas
-    {c:'prendedor', n:'Prendedor de Madeira', b:''},
-    {c:'prendedor', n:'Prendedor de Plástico', b:''},
-    {c:'prendedor', n:'Corda Varal', b:'nº 3/6'},
-    {c:'prendedor', n:'Corda Varal', b:'nº 5'},
+    {c:'prendedor', n:'Prendedor de Madeira', b:'', v:2.95},
+    {c:'prendedor', n:'Prendedor de Plástico', b:'', v:4.49},
+    {c:'prendedor', n:'Corda Varal', b:'nº 3/6', v:3.04},
+    {c:'prendedor', n:'Corda Varal', b:'nº 5', v:4.15},
     // Café / Cozinha
-    {c:'cafe', n:'Filtro para Café', b:'102/103'},
-    {c:'cafe', n:'Coador de Café (flanela)', b:'104/105'},
-    {c:'cafe', n:'Borracha p/ Panela de Pressão', b:''},
-    {c:'cafe', n:'Palito para Churrasco', b:''},
+    {c:'cafe', n:'Filtro para Café', b:'102/103', v:5.07},
+    {c:'cafe', n:'Coador de Café (flanela)', b:'104/105', v:3.70},
+    {c:'cafe', n:'Borracha p/ Panela de Pressão', b:'', v:2.78},
+    {c:'cafe', n:'Palito para Churrasco', b:'', v:5.41},
     // Esponjas / Panos
-    {c:'esponja', n:'Esponja Ouro', b:''},
-    {c:'esponja', n:'Esponja de Aço', b:'nº 0'},
-    {c:'esponja', n:'Esponja de Aço', b:'nº 2'},
-    {c:'esponja', n:'Pano Alvejado', b:'pequeno'},
-    {c:'esponja', n:'Flanela Ouro', b:''},
-    {c:'esponja', n:'Espremedor de Alho', b:''},
+    {c:'esponja', n:'Esponja Ouro', b:'', v:5.09},
+    {c:'esponja', n:'Esponja de Aço', b:'nº 0', v:2.87},
+    {c:'esponja', n:'Esponja de Aço', b:'nº 2', v:2.87},
+    {c:'esponja', n:'Pano Alvejado', b:'pequeno', v:5.42},
+    {c:'esponja', n:'Flanela Ouro', b:'', v:4.07},
+    {c:'esponja', n:'Espremedor de Alho', b:'', v:7.01},
   ].map((p,i)=>({...p, id:'p'+i, f:(FOTOS[i]||'')}));
 
   /* ===================== ESTADO ===================== */
@@ -508,6 +516,7 @@
   const catLabel = id => (CATEGORIAS.find(c=>c.id===id)||{}).nome || '';
   const catIcon  = id => (CATEGORIAS.find(c=>c.id===id)||{}).ic || '•';
   const nomeCompleto = p => p.b ? `${p.n} — ${p.b}` : p.n;
+  const brl = v => Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 
   /* ===================== CHIPS DE CATEGORIA ===================== */
   function renderChips(){
@@ -547,6 +556,7 @@
           <div>
             ${p.b?`<span class="badge">${p.b}</span>`:''}
             <div class="nome">${p.n}</div>
+            ${p.v?`<div class="preco">${p.ap?'<span class="ap">a partir de</span>':''}${brl(p.v)} <small>/un.</small></div>`:''}
           </div>
           <span class="mark"></span>
         </div>
@@ -609,16 +619,17 @@
   function totais(){
     const ids = Object.keys(qty);
     const unid = ids.reduce((s,id)=>s+qty[id],0);
-    return {itens: ids.length, unid};
+    const valor = Math.round(ids.reduce((s,id)=>s+qty[id]*((PRODUTOS.find(x=>x.id===id)||{}).v||0),0)*100)/100;
+    return {itens: ids.length, unid, valor};
   }
 
   function atualizarCarrinho(){
-    const {itens,unid} = totais();
+    const {itens,unid,valor} = totais();
     const bar = $('#cartbar');
     if(itens>0){
       bar.classList.add('show');
-      $('#cb-itens').textContent = itens + (itens>1?' itens':' item');
-      $('#cb-unid').textContent = unid + (unid>1?' unidades selecionadas':' unidade selecionada');
+      $('#cb-itens').textContent = brl(valor);
+      $('#cb-unid').textContent = itens + (itens>1?' itens · ':' item · ') + unid + (unid>1?' unidades':' unidade');
     } else {
       bar.classList.remove('show');
       if($('#drawer').classList.contains('open')) fecharDrawer();
@@ -636,7 +647,7 @@
         const p = PRODUTOS.find(x=>x.id===id);
         return `<div class="lineitem">
           <div class="li-thumb"><img src="${p.f}" alt="" loading="lazy" /></div>
-          <div class="li-nome">${p.n}${p.b?` <small>${p.b}</small>`:''}</div>
+          <div class="li-nome">${p.n}${p.b?` <small>${p.b}</small>`:''}${p.v?`<span class="li-val">${qty[id]} × ${brl(p.v)} = <b>${brl(qty[id]*p.v)}</b></span>`:''}</div>
           <div class="li-step">
             <button class="qbtn minus" data-id="${id}" data-d="-1" aria-label="Diminuir">−</button>
             <span class="qval">${qty[id]}</span>
@@ -648,8 +659,8 @@
         b.addEventListener('click',()=>mudarQtd(b.dataset.id, parseInt(b.dataset.d,10)));
       });
     }
-    const {itens,unid} = totais();
-    $('#d-tot').textContent = `${itens} ${itens===1?'item':'itens'} · ${unid} ${unid===1?'unidade':'unidades'}`;
+    const {itens,unid,valor} = totais();
+    $('#d-tot').innerHTML = `${brl(valor)}<small>${itens} ${itens===1?'item':'itens'} · ${unid} ${unid===1?'unidade':'unidades'}</small>`;
   }
 
   function abrirDrawer(){
@@ -734,7 +745,7 @@
   function montarMensagem(){
     const g = id => $('#'+id).value.trim();
     const ids = Object.keys(qty);
-    const {itens,unid} = totais();
+    const {itens,unid,valor} = totais();
 
     let t = `*PEDIDO DE ORÇAMENTO — GranRio*\n`;
     t += `\n*Cliente*\n`;
@@ -750,9 +761,12 @@
     t += `\n*Itens do pedido*\n`;
     ids.forEach(id=>{
       const p = PRODUTOS.find(x=>x.id===id);
-      t += `• ${qty[id]}x ${nomeCompleto(p)}\n`;
+      t += p.v
+        ? `• ${qty[id]}x ${nomeCompleto(p)} — ${p.ap?'a partir de ':''}${brl(p.v)}/un. = ${brl(qty[id]*p.v)}\n`
+        : `• ${qty[id]}x ${nomeCompleto(p)}\n`;
     });
     t += `\n*Resumo:* ${itens} ${itens===1?'item':'itens'} · ${unid} ${unid===1?'unidade':'unidades'}\n`;
+    t += `*Total estimado:* ${brl(valor)} _(preços com nota fiscal)_\n`;
     const obs = g('f-obs');
     if(obs) t += `\n*Observações:* ${obs}\n`;
     t += `\nAguardo o orçamento. Obrigado(a)!`;
@@ -771,7 +785,8 @@
       event:'whatsapp_click',
       origem:'pedido_orcamento',
       itens: totais().itens,
-      unidades: totais().unid
+      unidades: totais().unid,
+      valor: totais().valor
     });
 
     window.open(`https://wa.me/${WPP_NUMERO}?text=${encodeURIComponent(texto)}`,'_blank');
